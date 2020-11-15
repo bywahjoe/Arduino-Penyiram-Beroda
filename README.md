@@ -1,2 +1,2 @@
 # Arduino-Penyiram-Beroda
-Arduino Penyiram Tanaman Berdoda
+Arduino Penyiram Tanaman Beroda
