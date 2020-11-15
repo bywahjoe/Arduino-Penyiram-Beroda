@@ -35,15 +35,18 @@ void setup() {
   pinMode(enB, OUTPUT);
   pinMode(IN3, OUTPUT);
   pinMode(IN4, OUTPUT);
+  
   //RELAY
   pinMode(relayKanan, OUTPUT);
   pinMode(relayKiri, OUTPUT);
   digitalWrite(relayKanan,HIGH);
   digitalWrite(relayKiri,HIGH);
+  
   //SERVO
   myservoL.attach(servoKiri);
   myservoR.attach(servoKanan);
   setDefaultServo();
+  
   //LED UV
   pinMode(ledKiri,OUTPUT);
   pinMode(ledKanan,OUTPUT);
