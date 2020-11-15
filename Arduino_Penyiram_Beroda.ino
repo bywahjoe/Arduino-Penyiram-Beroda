@@ -4,7 +4,7 @@
 //SERVO;
 Servo myservoL;
 Servo myservoR;
-
+//SERVO CONFIG
 int setSudutServo = 80;
 int setDefaultSpeedMotor = 80;
 int setMaxServo = 160;
