@@ -11,22 +11,25 @@ int setMaxServo = 160;
 int setMinServo = setSudutServo;
 int setIntervalServo = 1;
 
+int waktuTanam = 20;
 //VAR BACA SENSOR
 int sensorL;
 int sensorR;
 
 //JALAN
 int jalan = 1;
-int maxJalan=3;
+int maxJalan = 3;
 
+void tanam(int delayTanam = waktuTanam);
 void setDefaultServo(int sudut = setSudutServo);
 void motorKanan(int myspeed = setDefaultSpeedMotor);
 void motorKiri(int myspeed = setDefaultSpeedMotor);
 void maju(int myspeed = setDefaultSpeedMotor);
 void mundur(int myspeed = setDefaultSpeedMotor);
+char recv;
 
 void setup() {
-  Serial.begin(9600);
+  Serial.begin(38400);
   //MOTOR
   pinMode(enA, OUTPUT);
   pinMode(IN1, OUTPUT);
@@ -35,43 +38,123 @@ void setup() {
   pinMode(enB, OUTPUT);
   pinMode(IN3, OUTPUT);
   pinMode(IN4, OUTPUT);
-  
+
   //RELAY
   pinMode(relayKanan, OUTPUT);
   pinMode(relayKiri, OUTPUT);
-  digitalWrite(relayKanan,HIGH);
-  digitalWrite(relayKiri,HIGH);
-  
+  pinMode(relayTanam, OUTPUT);
+  digitalWrite(relayKanan, HIGH);
+  digitalWrite(relayKiri, HIGH);
+  digitalWrite(relayTanam, HIGH);
+
   //SERVO
   myservoL.attach(servoKiri);
   myservoR.attach(servoKanan);
   setDefaultServo();
-  
+
   //LED UV
-  pinMode(ledKiri,OUTPUT);
-  pinMode(ledKanan,OUTPUT);
-  digitalWrite(ledKiri,HIGH);
-  digitalWrite(ledKanan,HIGH);
+  pinMode(ledKiri, OUTPUT);
+  pinMode(ledKanan, OUTPUT);
 
 }
 
 void loop() {
-  if (jalan <= maxJalan) maju();
-  else if (jalan <= maxJalan*2) mundur();
-  jalan++;
-  
-  delay(2000);
-  stops();
-  turunServo();
-  startSensorRelay();
-  naikServo();
-  
-  if (jalan > maxJalan*2) {
-    jalan = 1;
+  if (Serial.available()) {
+    recv = Serial.read();
+    if (recv == 'r') {
+      //Serial.print("RAWAT");
+      Serial.write("MODE RAWAT \n");
+      while (1) {
+        if (jalan <= maxJalan) maju();
+        else if (jalan <= maxJalan * 2) mundur();
+        jalan++;
+
+        delay(1500);
+        stops();
+        turunServo();
+        //tanam();
+        startSensorRelay();
+        naikServo();
+
+        if (jalan > maxJalan * 2) {
+          jalan = 1; stops(); break;
+        }
+      }
+    }
+    else if (recv == 't') {
+      //Serial.print("TANAM");
+      Serial.write("MODE TANAM \n");
+      while (1) {
+        if (jalan <= maxJalan) maju();
+        else if (jalan <= maxJalan * 2) mundur();
+        jalan++;
+
+        delay(1500);
+        stops();
+        turunServo();
+        delay(2000);
+        tanam();
+        startSensorRelay();
+        naikServo();
+
+        if (jalan > maxJalan * 2) {
+          jalan = 1; stops(); break;
+        }
+      }
+
+
+    } else if (recv == 's') {
+      //Serial.print("TANAM");
+      Serial.write("MODE SPECIAL \n");
+      while (1) {
+        if (jalan <= maxJalan) maju();
+        else if (jalan <= maxJalan * 2) mundur();
+        jalan++;
+
+        delay(1500);
+        stops();
+        turunServo();
+
+        if (jalan <= maxJalan) {
+          delay(2000);
+          tanam();
+        }
+
+        startSensorRelay();
+        naikServo();
+
+        if (jalan > maxJalan * 2) {
+          jalan = 1; stops(); break;
+        }
+      }
+
+
+    }
+    else {}
+
   }
+  //
+  //  if (jalan <= maxJalan) maju();
+  //  else if (jalan <= maxJalan * 2) mundur();
+  //  jalan++;
+  //
+  //  delay(2000);
+  //  stops();
+  //  turunServo();
+  //  tanam();
+  //  startSensorRelay();
+  //  naikServo();
+  //
+  //  if (jalan > maxJalan * 2) {
+  //    jalan = 1;
+  //  }
 
 }
-
+void tanam(int delayTanam) {
+  digitalWrite(relayTanam, LOW);
+  delay(20);
+  digitalWrite(relayTanam, HIGH);
+}
 void motorKanan(int myspeed) {
   if (myspeed == 0) {
     analogWrite(enA, 0);
@@ -141,8 +224,8 @@ void startSensorRelay() {
 
   sensorL = digitalRead(sensorKiri);
   sensorR = digitalRead(sensorKanan);
-  Serial.print("Kiri:");Serial.println(sensorL);
-  Serial.print("\tKanan:");Serial.println(sensorR);
+  Serial.print("Kiri:"); Serial.println(sensorL);
+  Serial.print("\tKanan:"); Serial.println(sensorR);
   if (sensorL == HIGH) {
     digitalWrite(relayKiri, LOW);
   }

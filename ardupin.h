@@ -14,6 +14,7 @@
 
 #define relayKanan 12
 #define relayKiri 11
+#define relayTanam A3
 
 #define ledKiri 2
 #define ledKanan 13
