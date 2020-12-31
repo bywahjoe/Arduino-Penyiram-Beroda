@@ -85,14 +85,14 @@ void loop() {
           } else if (digitalRead(kananIR) == LOW) {
             //stops();
             turunServoR();
-            startSensorRelay();
+            startSensorRelayR();
             naikServoR();
             maju();
             while (digitalRead(kananIR) != HIGH) {}
           } else if (digitalRead(kiriIR) == LOW) {
             //stops();
             turunServoL();
-            startSensorRelay();
+            startSensorRelayL();
             naikServoL();
             maju();
             while (digitalRead(kiriIR) != HIGH) {}
@@ -129,7 +129,7 @@ void loop() {
             //stops();
             turunServoR();
             tanam();
-            startSensorRelay();
+            startSensorRelayR();
             naikServoR();
             maju();
             while (digitalRead(kananIR) != HIGH) {}
@@ -137,7 +137,7 @@ void loop() {
             //stops();
             turunServoL();
             tanam();
-            startSensorRelay();
+            startSensorRelayL();
             naikServoL();
             maju();
             while (digitalRead(kiriIR) != HIGH) {}
@@ -321,4 +321,25 @@ void startSensorRelay() {
   delay(5000);
   digitalWrite(relayKanan, HIGH);
   digitalWrite(relayKiri, HIGH);
+}
+void startSensorRelayL() {
+  sensorL = digitalRead(sensorKiri);
+
+  Serial.print("Kiri:"); Serial.println(sensorL);
+  if (sensorL == HIGH) {
+    digitalWrite(relayKiri, LOW);
+  }
+  delay(5000);
+  digitalWrite(relayKiri, HIGH);
+}
+
+void startSensorRelayR() {
+  sensorR = digitalRead(sensorKanan);
+  Serial.print("\tKanan:"); Serial.println(sensorR);
+  
+  if (sensorR == HIGH) {
+    digitalWrite(relayKanan, LOW);
+  }
+  delay(5000);
+  digitalWrite(relayKanan, HIGH);
 }
